@@ -71,16 +71,13 @@
     <div id="voiceflow-chat-frame"></div>
     
     <script type="module">
-      import { MultipleChoice } from './ex_multiplechoice.js';
-      import { RatingSlider } from './ex_ratingslider.js';
       import { SortableList } from './ex_sortablelist.js';
-      import { ImageGenerator } from './ex_imagegeneration.js';
 
       (function (d, t) {
         var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
         v.onload = function () {
           window.voiceflow.chat.load({
-            verify: { projectID: '67aa9de7f1b2f4adafba5a03' },
+            verify: { projectID: '67df58c5a6193729493fdd74' },
             url: 'https://general-runtime.voiceflow.com',
             versionID: 'production',
             render: {
@@ -91,7 +88,7 @@
             allowDangerousHTML: true,
             assistant: {
               extensions: [
-                MultipleChoice, RatingSlider, SortableList, ImageGenerator,
+                SortableList,
               ],
               title: 'ARTM Agent',
               persistence: 'memory', //'sessionStorage',
