@@ -84,9 +84,10 @@ export const SortableList = {
         }
         /* 选项按钮样式 */
         .option-btn {
-          display: inline-block;
+          display: flex;                /* 使用 flex 布局 */
+          flex-wrap: wrap;              /* 允许内部内容换行 */
           width: fit-content;
-          max-width: 100%;
+          max-width: 90%;
           padding: 0.5rem 1.5rem;
           margin: 0 auto;
           background: #007AFF;
@@ -95,7 +96,7 @@ export const SortableList = {
           border-radius: 8px;
           cursor: move;
           user-select: none;
-          white-space: nowrap;
+          white-space: normal;          /* 允许换行 */
           min-width: 80px;
           text-align: center;
           z-index: 1;
