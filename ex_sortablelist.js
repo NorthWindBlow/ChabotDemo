@@ -85,6 +85,7 @@ export const SortableList = {
         /* 选项按钮样式 */
         .option-btn {
           width: fit-content;
+          max-width: 100%;
           padding: 0.5rem 1.5rem;
           margin: 0 auto;
           background: #007AFF;
@@ -97,6 +98,7 @@ export const SortableList = {
           min-width: 80px;
           text-align: center;
           z-index: 1;
+          font-size: 0.8rem;             /* 调小字体 */
         }
         .dragging {
           opacity: 0.5;
