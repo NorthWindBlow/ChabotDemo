@@ -84,6 +84,7 @@ export const SortableList = {
         }
         /* 选项按钮样式 */
         .option-btn {
+          display: inline-block;
           width: fit-content;
           max-width: 100%;
           padding: 0.5rem 1.5rem;
