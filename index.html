@@ -2,10 +2,33 @@
 <html>
   <head>
     <title>ARTM Agent</title>
+    <style>
+      body {
+        background-color: #f9f9f9;
+      }
+      #flat-chat {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      #confetti-canvas {
+        position: fixed;
+        z-index: 999;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+      }
+    </style>
   </head>
+  
   <body> 
-
-    <script type="text/javascript">
+    <div id="voiceflow-chat-frame"></div>
+    <script type="module">
+      
       import { SortableList } from './ex_sortablelist.js';
       
       (function(d, t) {
