@@ -29,7 +29,7 @@
     <div id="voiceflow-chat-frame"></div>
 
     
-    <script type="text/javascript">
+    <script type="module">
       
       import { SortableList } from './ex_sortablelist.js';
       
@@ -43,8 +43,6 @@
               voice: {
                 url: "https://runtime-api.voiceflow.com"
               },
-              autostart: true,
-              allowDangerousHTML: true,
               assistant: {
                 extensions: [
                   SortableList,
@@ -52,7 +50,7 @@
             });
             setTimeout(function() {
                   window.voiceflow.chat.open(); // Automatically opens the chat after loading
-              }, 10); // Adjust the timeout if needed (currently set to 1 second)
+              }, 100); // Adjust the timeout if needed (currently set to 1 second)
           }
           v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
       })(document, 'script');
