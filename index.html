@@ -2,70 +2,6 @@
 <html>
   <head>
     <title>ARTM Agent</title>
-     <style>
-      body {
-        background-color: #f9f9f9;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
-      #voiceflow-chat-frame {
-        /* 桌面端默认样式 - 改为使用视口百分比 */
-        width: 95vmin;
-        height: 95vmin;
-        max-width: 600px;
-        min-width: 320px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        background: white;
-        transition: width 0.3s ease; /* 添加平滑过渡 */
-        
-        /* 移动端样式覆盖 */
-        @media (max-width: 1300px) and (orientation: portrait) {
-          width: 100vw !important;
-          height: 100dvh !important;
-          max-width: none !important;
-          border-radius: 0 !important;
-          box-shadow: none !important;
-          position: fixed;
-          top: 0;
-          left: 0;
-        }
-      }
-
-      /* 横竖屏适配 */
-      @media (max-width: 1300px) and (orientation: landscape) {
-        html, body {
-          height: 100%;
-          overflow: hidden;
-        }
-      }
-
-      /* 调整媒体查询条件 */
-      @media (max-width: 768px) and (orientation: landscape) {
-        #voiceflow-chat-frame {
-          width: 100vw !important;
-          height: 100dvh !important;
-        }
-      }
-
-      /* 调整聊天窗口样式 */
-      .vfrc-chat {
-        width: 100% !important;
-        height: 100% !important;
-        max-height: none !important;
-        border-radius: inherit !important;
-      }
-      
-      /* 消息容器适配 */
-      .vfrc-chat-dialog {
-        height: calc(100% - 60px) !important;
-      }   
-
-    </style>
   </head>
   <body> 
 
@@ -86,10 +22,10 @@
                 extensions: [
                   SortableList,
                 ]},
-              setTimeout(function() {
+            });
+            setTimeout(function() {
                   window.voiceflow.chat.open(); // Automatically opens the chat after loading
               }, 10); // Adjust the timeout if needed (currently set to 1 second)
-            });
           }
           v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
       })(document, 'script');
