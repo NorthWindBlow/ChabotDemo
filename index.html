@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ARTM Agent</title>
+    <title>Survey Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  
-  <body>     
+  <body> 
     <script type="module">
-      
-      import { SortableList } from './ex_sortablelist.js';
-      
+      import { MultipleChoice } from './ex_multiplechoice.js';
+      import { RatingSlider } from './ex_ratingslider.js';
+      import { TableChoice } from './ex_tablechoice.js';
+      import { DisableInputExtension } from './ex_disableinput.js';
+
       (function(d, t) {
           var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
           v.onload = function() {
             window.voiceflow.chat.load({
-              verify: { projectID: '67e1ef8deb295306cbdbdd00' },
+              verify: { projectID: '6829f7f309bde9328a60835f' },
               url: 'https://general-runtime.voiceflow.com',
               versionID: 'production',
               voice: {
                 url: "https://runtime-api.voiceflow.com"
               },
               assistant: {
-                extensions: [
-                  SortableList,
-                ]},
+                  extensions: [
+                    MultipleChoice, RatingSlider, TableChoice, DisableInputExtension,
+                  ],
+              },
             });
             setTimeout(function() {
-                  window.voiceflow.chat.open(); // Automatically opens the chat after loading
-              }, 1000); // Adjust the timeout if needed (currently set to 1 second)
+                window.voiceflow.chat.open(); // Automatically opens the chat after loading
+            }, 1000); // Adjust the timeout if needed (currently set to 1 second)
           }
           v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
       })(document, 'script');
     </script>
-    
   </body>
 </html>
