@@ -2,7 +2,7 @@ export const ImageGenerator = {
   name: 'ImageGenerator',
   type: 'response',
   match: ({ trace }) =>
-    trace.type === 'image_generation' || trace.payload.name === 'image_generation',
+    trace.type === 'image_generation' || trace.payload?.name === 'image_generation',
 
   render: ({ trace, element }) => {
     try {
