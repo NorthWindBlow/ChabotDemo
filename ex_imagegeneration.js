@@ -1,103 +1,106 @@
 export const ImageGenerator = {
-  name: 'image-generation',
+  name: 'ImageGenerator',
   type: 'response',
-
-  // ✅ 安全匹配：判空 + 只匹配我们关心的 trace
-  match: ({ trace }) => {
-    const t = trace?.type;
-    const p = trace?.payload;
-    const isImageGen = p?.name === 'image_generation';
-    // Voiceflow 常见：自定义/组件类型，payload.name 标识你的组件名
-    return (t === 'component' || t === 'custom') && isImageGen;
-  },
+  match: ({ trace }) =>
+    trace.type === 'image_generation' || trace.payload.name === 'image_generation',
 
   render: ({ trace, element }) => {
-    // ✅ 所有操作都基于安全的 payload
-    const payload = trace?.payload ?? {};
-    let { prompt, apiKey, openaiModel, submitEvent } = payload;
+    try {
+      // 解构所需的参数，包括 submitEvent
+      let { prompt, apiKey, openaiModel, submitEvent } = trace.payload;
 
-    // 给默认值，避免 undefined 继续向下传
-    openaiModel = openaiModel || 'gpt-image-1';      // 你自己的默认模型名
-    submitEvent = submitEvent || 'image_generation_done';
+      if (!prompt || !apiKey || !openaiModel || !submitEvent) {
+        throw new Error("Missing required input variables: prompt, apiKey, openaiModel, or submitEvent");
+      }
 
-    // UI 容器
-    const container = document.createElement('div');
-    container.className = 'image-generator-container';
-    const style = document.createElement('style');
-    style.textContent = `
-      .image-generator-container { width:auto; max-width:100%; margin:1rem auto; text-align:center; }
-      .image-generator-container img { width:100%; height:auto; display:block; margin:0 auto; }
-      .loading-text { font-size:1rem; color:#555; margin:1rem 0; }
-      .error-text { font-size:1rem; color:#c00; margin:1rem 0; }
-    `;
-    container.appendChild(style);
-    element.appendChild(container);
+      // 创建容器
+      const container = document.createElement('div');
+      container.className = 'image-generator-container';
 
-    const loadingText = document.createElement('div');
-    loadingText.className = 'loading-text';
-    container.appendChild(loadingText);
-
-    // ✅ 参数校验（直接在界面提示，不抛异常中断）
-    if (!prompt) {
-      loadingText.className = 'error-text';
-      loadingText.textContent = 'Missing "prompt".';
-      return () => container.remove();
-    }
-    if (!apiKey) {
-      loadingText.className = 'error-text';
-      loadingText.textContent = 'Missing "apiKey". (Do not expose secrets on client)';
-      return () => container.remove();
-    }
-
-    loadingText.textContent = 'Generating image...';
-
-    // ⚠️ 注意：在浏览器里直连 OpenAI 会暴露 Key，建议改为后端代理
-    fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        prompt,
-        n: 1,
-        size: '1024x1024',
-        model: openaiModel
-      })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(data => {
-        const imageUrl = data?.data?.[0]?.url;
-        if (!imageUrl) throw new Error('Image URL not found');
-
-        loadingText.remove();
-
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = prompt;
-        container.appendChild(img);
-
-        // ✅ 回传交互事件时也要兜底，防止再次中断
-        try {
-          window?.voiceflow?.chat?.interact?.({
-            type: submitEvent,               // 例如自定义事件名 'image_generation_done'
-            payload: { ok: true, imageUrl }  // 带回生成结果更实用
-          });
-        } catch (e) {
-          // 静默失败即可，不要影响 UI
-          console.warn('submitEvent failed:', e);
+      // 样式定义
+      const style = document.createElement('style');
+      style.textContent = `
+        .image-generator-container {
+          width: auto;
+          max-width: 100%;
+          margin: 1rem auto;
+          text-align: center;
         }
-      })
-      .catch(err => {
-        loadingText.className = 'error-text';
-        loadingText.textContent = `Error generating image: ${err.message}`;
-        console.error('ImageGenerator error:', err);
-      });
+        .image-generator-container img {
+          width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+        .loading-text {
+          font-size: 1rem;
+          color: #555;
+          margin: 1rem 0;
+        }
+      `;
+      container.appendChild(style);
+      element.appendChild(container);
 
-    // 清理
-    return () => container.remove();
+      // 显示加载提示
+      const loadingText = document.createElement('div');
+      loadingText.className = 'loading-text';
+      loadingText.textContent = 'Generating image...';
+      container.appendChild(loadingText);
+
+      // 调用 OpenAI API 接口生成图片
+      fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          n: 1,
+          size: "1024x1024",
+          model: openaiModel
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Failed to generate image");
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.data && data.data[0] && data.data[0].url) {
+            const imageUrl = data.data[0].url;
+            // 移除加载提示
+            loadingText.remove();
+            // 创建并展示图片
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.alt = prompt;
+            container.appendChild(img);
+
+            // 在展示图片后，通过 submitEvent 返回交互事件
+            window.voiceflow.chat.interact({
+              type: submitEvent,
+              payload: {
+                confirmation: 'Options submitted successfully'
+              }
+            });
+          } else {
+            throw new Error("Image URL not found in response");
+          }
+        })
+        .catch(error => {
+          loadingText.textContent = 'Error generating image.';
+          console.error("ImageGenerator Component Error:", error.message);
+        });
+
+      // 清理工作
+      return () => {
+        container.remove();
+      };
+
+    } catch (error) {
+      console.error("ImageGenerator Component Error:", error.message);
+    }
   }
 };
